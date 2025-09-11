@@ -1,0 +1,8 @@
+Sun Blog Project:
+auth: login-register-logout
+creating blog: blog title - blog content(CK editor) - blog tags
+comments on blog: username - comment body
+editing user information: bio - profile
+admin panel: managing all blogs
+searching: with tags or article title
+like to blogs
