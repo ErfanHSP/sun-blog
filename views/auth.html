@@ -23,7 +23,8 @@
   margin: 20px auto;
   padding: 8px;
   display: none;
-  font-weight: 900;
+  font-weight: 400;
+  font-size: 15px;
 }
 .success-box {
   background-color: darkgreen;
@@ -33,7 +34,8 @@
   margin: 20px auto;
   padding: 8px;
   display: none;
-  font-weight: 900;
+  font-weight: 400;
+  font-size: 15px;
 }
 .login-container {
   background-color: rgba(0, 0, 0, 0.6);
@@ -102,6 +104,7 @@
         <button type="submit">Submit</button>
       </form>
       <div class="error-box"></div>
+      <div class="success-box"></div>
     </div>
   </div>
   <script>
@@ -109,8 +112,9 @@
     let phoneInput = document.getElementById("phone")
     let errorBox = document.getElementsByClassName("error-box")
     let successBox = document.getElementsByClassName("success-box")
-    requestOtpForm.addEventListener("submit", (e) => {
-  e.preventDefault()
+    
+  requestOtpForm.addEventListener("submit", (e) => {
+    e.preventDefault()
 
   fetch("/auth/request-otp", {
     method: "POST",
@@ -123,17 +127,19 @@
   })
   .then(async (res) => {
     const data = await res.json()
-    if (!res.success) {
+    if (!data.success) {
       // ❌ response status is 400, 401, etc.
       console.error("Server error:", data.message || "Unknown error")
       errorBox[0].style.display = 'block'
-      errorBox[0].innerHTML = data.message || "Something went wrong."
+      successBox[0].style.display = 'none'
+      errorBox[0].innerHTML = `${data.message} try again after ${data.remainingTime} seconds.` || "Something went wrong."
       return
+    } else if (data.success) {
+      // ✅ success
+      successBox[0].style.display = 'block'
+      errorBox[0].style.display = 'none'
+      successBox[0].innerHTML = data.message || "otp code successfully sent."
     }
-    // ✅ success
-    console.log("OTP sent:", data)
-    successBox[0].style.display = 'block'
-    successBox[0].innerHTML = data.message || "otp code successfully sent."
   })
     .catch((err) => {
       console.error("Network error:", err)

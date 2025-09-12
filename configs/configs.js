@@ -10,7 +10,8 @@ module.exports = {
     auth: {
         token_expire: process.env.TOKEN_EXPIRE,
         token_secret: process.env.TOKEN_SECRET,
-        otp_expire: process.env.PHONE_OTP_EXPRIE
+        otp_expire: process.env.PHONE_OTP_EXPRIE,
+        phone_otp_expire: process.env.PHONE_OTP_EXPIRE
     },
     frontendPath,
     sms: {

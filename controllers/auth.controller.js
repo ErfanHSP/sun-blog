@@ -2,6 +2,7 @@ const RedisService = require("./../services/redis")
 const OtpCodeService = require("./../services/otp")
 const path = require("path")
 const configs = require("./../configs/configs")
+const normalizePhone = require("./../utils/nomalizePhone")
 
 exports.displayAuthPage = (req, res, next) => {
     try {
@@ -14,26 +15,30 @@ exports.displayAuthPage = (req, res, next) => {
 exports.requestOtpCode = async (req, res, next) => {
     try {
         const {phone} = req.body
-        console.log("phone number: ", phone)
         if (!phone) {
             return res.status(400).json({
                 success: false,
                 message: "phone number not found."
             })
         }
-        let {remainingTime, expired} = await RedisService.getPhoneOtpCodeDetails(phone)
+        let normalizedPhoneNumber = normalizePhone(phone)
+        if (!normalizedPhoneNumber) {
+            return res.status(400).json({
+                success: false,
+                message: "Phone number not found!"
+            })
+        }
+        let {remainingTime, expired} = await RedisService.getPhoneOtpCodeDetails(normalizedPhoneNumber)
         console.log("remaining: ", remainingTime, "expired: ", expired)
-        // if (!expired) {
-        //     return res.status(400).json({
-        //         success: false,
-        //         message: "Otp code already sent.",
-        //         remainingTime
-        //     })
-        // }
-        let otpCode = await RedisService.generatePhoneOtpCode(phone)
-        let token = await OtpCodeService.loginToFarazSms()
-        
-        await OtpCodeService.sendOtpCode(phone, otpCode, token)
+        if (!expired) {
+            return res.status(400).json({
+                success: false,
+                message: "Otp code already sent.",
+                remainingTime
+            })
+        }
+        let otpCode = await RedisService.generatePhoneOtpCode(normalizedPhoneNumber)
+        await OtpCodeService.sendOtpCode(normalizedPhoneNumber, otpCode)
         return res.status(200).json({
             success: true,
             message: "OTP code sent."
