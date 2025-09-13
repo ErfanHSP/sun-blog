@@ -1,6 +1,7 @@
 const bodyValidator = (schema) => {
   return async (req, res, next) => {
     try {
+      console.log("req.body: ", req.body)
       if (!req.body || typeof req.body !== "object") {
         return res.status(400).json({
           success: false,

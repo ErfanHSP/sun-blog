@@ -7,5 +7,7 @@ const authValidator = require("./../validators/auth.validator")
 router.get("/login", controller.displayAuthPage)
 
 router.post("/request-otp", bodyValidator(authValidator), controller.requestOtpCode)
+router.post("/verify-otp", controller.verifyOtpCode)
+
 
 module.exports = router

@@ -1,12 +1,15 @@
 const RedisService = require("./../services/redis")
 const OtpCodeService = require("./../services/otp")
+const UserModel = require("./../models/UserMode")
 const path = require("path")
 const configs = require("./../configs/configs")
+const jwt = require("jsonwebtoken")
+const bcrypt = require("bcrypt")
 const normalizePhone = require("./../utils/nomalizePhone")
 
 exports.displayAuthPage = (req, res, next) => {
     try {
-        res.sendFile(path.join(configs.frontendPath, "auth.html"))
+        res.sendFile(path.join(configs.frontendPath, "login.html"))
     } catch (error) {
         next(error)
     }
@@ -29,16 +32,17 @@ exports.requestOtpCode = async (req, res, next) => {
             })
         }
         let {remainingTime, expired} = await RedisService.getPhoneOtpCodeDetails(normalizedPhoneNumber)
-        console.log("remaining: ", remainingTime, "expired: ", expired)
+        console.log(remainingTime, expired)
         if (!expired) {
             return res.status(400).json({
                 success: false,
-                message: "Otp code already sent.",
+                message: "Otp code already sent. Check your messages.",
                 remainingTime
             })
         }
         let otpCode = await RedisService.generatePhoneOtpCode(normalizedPhoneNumber)
-        await OtpCodeService.sendOtpCode(normalizedPhoneNumber, otpCode)
+        console.log("otpCode: ", otpCode)
+        // await OtpCodeService.sendOtpCode(normalizedPhoneNumber, otpCode)
         return res.status(200).json({
             success: true,
             message: "OTP code sent."
@@ -48,10 +52,43 @@ exports.requestOtpCode = async (req, res, next) => {
     }
 }
 
-exports.verifyOtpCode = (req, res, next) => {
+exports.verifyOtpCode = async (req, res, next) => {
     try {
-        
+        const {otp, phone} = req.body
+        if (!otp || !phone) {
+            return res.status(400).json({
+                success: false,
+                message: "Validation error."
+            })
+        }
+        let normalizedPhoneNumber = normalizePhone(phone)
+        const {savedOtp} = await RedisService.getPhoneOtpCodeDetails(normalizedPhoneNumber)
+        if (!savedOtp) {
+            return res.status(401).json({
+                success: false,
+                message: "otp code expired",
+                expired: true
+            })
+        }
+        const checkOtp = bcrypt.compareSync(otp, savedOtp)
+        if (!checkOtp) {
+            return res.status(400).json({
+                success: false,
+                message: "Otp code is wrong."
+            })
+        }
+        const user = UserModel.build({
+            phone
+        })
+        await user.save()
+        const token = jwt.sign({userID: user.id, role: user.role}, configs.auth.token_secret, {
+            expiresIn: `${configs.auth.token_expire}d`
+        })
+        res.cookie("token", token, {
+            maxAge: 1_210_000_000
+        })
+        res.status(201).redirect("/me/panel")
     } catch (error) {
-        
+        next(error)
     }
 }

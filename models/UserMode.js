@@ -1,16 +1,17 @@
-const { DataTypes, STRING } = require("sequelize")
+const { DataTypes } = require("sequelize")
 const {sequelize} = require("./../db")
 
-const User = await sequelize.define("user", {
+const User = sequelize.define("user", {
     id: {
         type: DataTypes.INTEGER,
         allowNull: false,
         autoIncrement: true,
-        unique: true
+        unique: true,
+        primaryKey: true
     },
     username: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: true
     },
     fullname: {
         type: DataTypes.STRING,
@@ -20,5 +21,20 @@ const User = await sequelize.define("user", {
         type: DataTypes.STRING,
         allowNull: false,
         unique: true
+    },
+    bio: {
+        type: DataTypes.TEXT,
+        allowNull: true
+    },
+    role: {
+        type: DataTypes.ENUM("ADMIN", "USER"),
+        allowNull: false,
+        defaultValue: "USER"
+    },
+    isActive: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: true
     }
 })
+
+module.exports = User

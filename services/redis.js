@@ -30,7 +30,6 @@ const generatePhoneOtpCode = async (phone, length = 5) => {
 
 const getPhoneOtpCodeDetails = async (phone) => {
     const otp = await redis.get(getPhoneOtpRedisKey(phone))
-    console.log("otp : ", otp)
     if (!otp) {
         return {
             expired: true,
@@ -40,9 +39,11 @@ const getPhoneOtpCodeDetails = async (phone) => {
     const remainingTime = await redis.ttl(getPhoneOtpRedisKey(phone))
     return {
         expried: false,
-        remainingTime
+        remainingTime,
+        savedOtp: otp
     }
 }
+
 
 module.exports = {
     generatePhoneOtpCode,

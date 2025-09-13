@@ -1,7 +1,5 @@
 const {Sequelize} = require("sequelize")
 const configs = require("./configs/configs")
-console.log("configs: ", configs.dev_database);
-
 
 const sequelize = new Sequelize({
     host: "localhost",

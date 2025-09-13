@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <div class="login-container">
+    <div class="login-box">
+      <h2>Login</h2>
+      <form id="request-otp-form">
+        <label for="phone">Enter your phone number.</label>
+        <input type="tel" name="phone" id="phone" placeholder="Phone Number" required />
+        <button type="submit">Submit</button>
+      </form>
+      <form id="verify-otp-form">
+        <label for="otp">We've send verification code to your number.</label>
+        <a href="" style="font-size: 12px;">Didn't get the code?</a>
+        <input type="number" name="otp" id="otp" placeholder="Please enter otp code..." required />
+        <button type="submit">Verify</button>
+      </form>
+      <div class="error-box"></div>
+      <div class="success-box"></div>
+    </div>
+  </div>
+  <script src="../scripts/auth-fetch.js"></script>
+</body>
+</html>
