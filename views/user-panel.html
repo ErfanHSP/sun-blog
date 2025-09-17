@@ -8,13 +8,16 @@
     <title>User Panel</title>
 </head>
 <body>
+    <div class="error-box"></div>
+    <div class="success-box"></div>
     <div class="user-panel">
         <aside class="sidebar">
-            <h3 class="sidebar-title">Account Panel</h3>
+            <h3 class="sidebar-title">User Panel</h3>
             <ul class="sidebar-menu">
                 <li data-section="settings" class="active"><i class="bi bi-gear-fill"></i>&nbsp;&nbsp;Settings</li>
                 <li data-section="saves"><i class="bi bi-bookmarks-fill"></i>&nbsp;&nbsp;Saves</li>
-                <li data-section="create"><i class="bi bi-openai"></i>&nbsp;&nbsp;Create</li>
+                <li data-section="create"><i class="bi bi-openai"></i>&nbsp;&nbsp;Make With AI</li>
+                <a href="/blog/create"><li data-section="create"><i class="bi bi-openai"></i>&nbsp;&nbsp;Start Writing</li></a>
             </ul>
         </aside>
 
@@ -27,7 +30,7 @@
                 </div>
 
                 <div class="tab-content active" id="overview-tab">
-                    <p>👋 Welcome to your settings overview.</p>
+                    <h3 id="settings-h3"></h3>
                     <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px;">
                         <h4>Your account status:</h4>
                         <p>Member since: January 1, 2023</p>
@@ -37,6 +40,9 @@
 
                 <div class="tab-content" id="account-tab">
                     <form id="account-form">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" name="phone" placeholder="" required disabled />
+
                         <label for="fullname">Fullname</label>
                         <input type="text" id="fullname" name="fullname" placeholder="Your full name" required />
 
@@ -45,7 +51,7 @@
 
                         <label for="bio">Bio</label>
                         <textarea name="bio" id="bio" rows="8"></textarea>
-                        <button type="submit">Save Changes</button>
+                        <button type="submit" id="formAccountBtn">Save Changes</button>
                     </form>
                 </div>
             </section>

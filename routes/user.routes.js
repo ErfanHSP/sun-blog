@@ -2,10 +2,13 @@ const express = require("express")
 const router = express.Router()
 const controller = require("./../controllers/user.controller")
 const bodyValidator = require("./../middlewares/bodyValidator")
-const authValidator = require("./../validators/auth.validator")
+const authMiddleware = require("./../middlewares/auth")
 
+router.use(authMiddleware.auth)
 router.get("/panel", controller.displayUserPanelPage)
 
-router.post("/settings/edit-info", controller.editUserInfo)
+router.route("/profile")
+    .get(controller.getMe)
+    .put(controller.editUserInfo)
 
 module.exports = router

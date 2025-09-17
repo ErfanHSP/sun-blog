@@ -1,37 +1,37 @@
 // تغییر بین بخش‌های اصلی
 const menuItems = document.querySelectorAll(".sidebar-menu li");
 const panelSections = document.querySelectorAll(".panel-section");
-const accountForm = document.getElementById("account-form")
+const accountForm = document.getElementById("account-form");
+let errorBox = document.getElementsByClassName("error-box")
+let successBox = document.getElementsByClassName("success-box")
+let submitFormAccountBtn = document.getElementById("formAccountBtn")
 
 document.addEventListener("DOMContentLoaded", () => {
-    // دریافت توکن از localStorage
-    const token = localStorage.getItem('token');
-    console.log(token)
-    // اگر توکن وجود ندارد
-    if (!token) {
-        console.error("No token found");
-        // redirect to login or show error
-        return;
-    }
-
-    fetch("/me/getme", {
+    fetch("/me/profile", {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`  // اضافه کردن توکن به هدر
         },
     })
     .then(async (res) => {
+        if (!res.ok) {
+            throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        
         const data = await res.json();
+        if (data.tokenError) {
+            
+        }
         if (!data.success) {
             console.error("Server error:", data.message || "Unknown error");
-            // نمایش خطا اگر نیاز باشد
         } else if (data.success) {
-            console.log("User data:", data.user);
-            // اینجا می‌توانید اطلاعات کاربر را در صفحه نمایش دهید
-            // به عنوان مثال:
-            // document.getElementById('username').value = data.user.username;
-            // document.getElementById('fullname').value = data.user.fullname;
+            if (data.user) {
+                document.getElementById('username').value = data.user.username;
+                document.getElementById('phone').value = data.user.phone
+                document.getElementById('fullname').value = data.user.fullname;
+                document.getElementById("settings-h3").innerHTML = data.user.fullname ? data.user.fullname + " Welcome to SunBlog☀️" : "Welcome to SunBlog☀️"
+                document.getElementById("bio").value = data.user.bio
+            }
         }
     })
     .catch((err) => {
@@ -59,7 +59,6 @@ menuItems.forEach(item => {
     });
 });
 
-// تغییر بین تب‌های داخلی
 const tabButtons = document.querySelectorAll(".tab-btn");
 const tabContents = document.querySelectorAll(".tab-content");
 
@@ -82,5 +81,57 @@ tabButtons.forEach(btn => {
 
 accountForm.addEventListener("submit", (e) => {
     e.preventDefault()
-    fetch("")
+    submitFormAccountBtn.disabled = true
+    submitFormAccountBtn.textContent = 'Submitting...'
+    let usernameInput = document.getElementById("username")
+    let fullnameInput = document.getElementById("fullname")
+    let bioText = document.getElementById("bio")
+    fetch("/me/profile", {
+    method: "PUT",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+        username: usernameInput.value,
+        fullname: fullnameInput.value,
+        bio: bioText.value
+    })
+    })
+    .then(async (res) => {
+    const data = await res.json()
+    if (!data.success) {
+        console.error("Server error:", data.message || "Unknown error")
+        setTimeout(() => {
+            successBox[0].style.display = 'none'
+            errorBox[0].style.display = 'block'
+            errorBox[0].innerHTML = `${data.message}`
+
+        }, 2000)
+        setTimeout(() => {
+            errorBox[0].style.display = 'none'
+        }, 7000);
+        
+        
+    } else if (data.success) {
+        setTimeout(() => {
+            successBox[0].style.display = 'block'
+            errorBox[0].style.display = 'none'
+            successBox[0].innerHTML = data.message || "User successfully updated."
+        }, 2000)
+        setTimeout(() => {
+            location.reload()
+            successBox[0].style.display = 'none'
+        }, 3000);
+    }
+    })
+    .catch((err) => {
+    console.error("Network error:", err)
+    alert("Network error. Please try again.")
+    })
+    .finally(() => {
+        setTimeout(() => {
+            submitFormAccountBtn.disabled = false;
+            submitFormAccountBtn.textContent = 'Save Changes';
+        }, 3000);
+    })
 })
