@@ -9,6 +9,13 @@ const Blog = sequelize.define("Blog", {
         unique: true,
         primaryKey: true
     },
+    userId: {
+        type: DataTypes.INTEGER,
+        references: {
+            model: "users",
+            key: "id"
+        }
+    },
     title: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -63,5 +70,12 @@ const Blog = sequelize.define("Blog", {
         }
     }
 })
+
+Blog.associate = (models) => {
+    Blog.belongsTo(models.User, {
+        foreignKey: "userId",
+        as: "author"
+    })
+}
 
 module.exports = Blog

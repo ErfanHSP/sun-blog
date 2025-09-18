@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Blog</title>
+    <!-- Using free version of CKEditor -->
+     <link rel="stylesheet" href="../css/blog-create.css">
+    <script src="https://cdn.ckeditor.com/ckeditor5/41.3.1/classic/ckeditor.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Edit Your Blog Post</h1>
+            <p>Create and publish your new blog post</p>
+        </div>
+        
+        <form id="createBlogForm" class="blog-form">
+            <div class="form-group">
+                <label for="title">Post Title</label>
+                <input type="text" id="title" name="title" placeholder="Enter post's title" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="editor">Post Content</label>
+                <textarea id="editor" name="content"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="slug">Post Slug</label>
+                <input type="text" id="slug" name="slug" placeholder="Specify post's unique slug" required>
+            </div>
+
+            <div class="form-group">
+                <label for="featuredImage">Featured Image</label>
+                <input type="file" id="featuredImage" name="featuredImage" placeholder="Specify post's unique slug">
+            </div>
+
+            <div class="form-group">
+                <label for="status">Post Publish Status</label>
+                <select name="status" id="status" required>
+                    <option value="draft">Draft</option>
+                    <option value="published">Published</option>
+                    <option value="archived">Archived</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="tags">Tags</label>
+                <input type="text" id="tags" name="tags" placeholder="Separate tags using -">
+                <span style="font-size: 12px; color: #afafaf;">Example: Programming-Javascript</span>
+            </div>
+
+            <h4 style="margin: 12px 0;">Google Optimization</h4>
+
+            <div class="form-group">
+                <label for="metaTitle">Meta Title</label>
+                <input type="text" id="metaTitle" name="metaTitle" placeholder="">
+            </div>
+
+             <div class="form-group">
+                <label for="metaDescription">Meta Description</label>
+                <input type="text" id="metaDescription" name="metaDescription" placeholder="">
+            </div>
+            
+            <button type="submit" id="publishBlogBtn" class="btn">Publish Post</button>
+            <div class="error-box"></div>
+            <div class="success-box"></div>
+        </form>
+        
+        <div class="preview-section">
+            <h2>Post Preview</h2>
+            <div id="previewContent" class="preview-content">
+                <p>After writing your content, the preview will appear here...</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="../scripts/blog-create.js"></script>
+</body>
+</html>
