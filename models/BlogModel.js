@@ -1,81 +1,69 @@
-const { DataTypes } = require("sequelize")
-const {sequelize} = require("../db")
+const { DataTypes } = require("sequelize");
 
-const Blog = sequelize.define("Blog", {
-    id: {
+const Blog = (sequelize) => {
+  return sequelize.define(
+    "Blog",
+    {
+      id: {
         type: DataTypes.INTEGER,
         allowNull: false,
         autoIncrement: true,
         unique: true,
-        primaryKey: true
-    },
-    userId: {
-        type: DataTypes.INTEGER,
-        references: {
-            model: "users",
-            key: "id"
-        }
-    },
-    title: {
+        primaryKey: true,
+      },
+      title: {
         type: DataTypes.STRING,
         allowNull: false,
         validate: {
-            notEmpty: true,
-            len: [3, 200]
-        }
-    },
-    content: {
+          notEmpty: true,
+          len: [3, 200],
+        },
+      },
+      content: {
         type: DataTypes.TEXT("long"),
         allowNull: false,
-    },
-    slug: {
+      },
+      slug: {
         type: DataTypes.STRING,
         unique: true,
-        allowNull: false
-    },
-    featuredImage: {
+        allowNull: false,
+      },
+      featuredImage: {
         type: DataTypes.STRING,
-        allowNull: true
-    },
-    status: {
+        allowNull: true,
+      },
+      status: {
         type: DataTypes.ENUM("published", "draft", "archived"),
-        defaultValue: "draft"
-    },
-    views: {
+        defaultValue: "draft",
+      },
+      views: {
         type: DataTypes.INTEGER,
-        defaultValue: 0
-    },
-    tags: {
-        type: DataTypes.JSON(),
-        defaultValue: []
-    },
-    metaTitle: {
+        defaultValue: 0,
+      },
+      metaTitle: {
         type: DataTypes.STRING,
-        allowNull: true
-    },
-    metaDescription: {
+        allowNull: true,
+      },
+      metaDescription: {
         type: DataTypes.STRING,
-        allowNull: true
-    }
-}, {
-    timestamps: true,
-    hooks: {
+        allowNull: true,
+      },
+    },
+    {
+      timestamps: true,
+      tableName: "blogs",
+      hooks: {
         beforeValidate: (blog) => {
-            if (blog.title && !blog.slug) {
-                blog.slug = blog.title
-                .toLowerCase()
-                .replace(/[^a-z0-9]+/g, '-') // replace all characters contains AZ and not numbers with -
-                .replace(/(^-|-$)+/g, ''); // replaces - and | from begining and end of the string
-            }
-        }
+          if (blog.title && !blog.slug) {
+            blog.slug = blog.title
+              .toLowerCase()
+              .replace(/[^a-z0-9]+/g, "-") // replace all characters contains AZ and not numbers with -
+              .replace(/(^-|-$)+/g, ""); // replaces - and | from begining and end of the string
+          }
+        },
+      },
     }
-})
+  );
+};
 
-Blog.associate = (models) => {
-    Blog.belongsTo(models.User, {
-        foreignKey: "userId",
-        as: "author"
-    })
-}
-
-module.exports = Blog
+module.exports = Blog;

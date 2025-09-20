@@ -1,22 +1,23 @@
-const {Sequelize} = require("sequelize")
-const configs = require("./configs/configs")
+const { Sequelize } = require("sequelize");
+const configs = require("./configs");
 
 const sequelize = new Sequelize({
-    host: "localhost",
-    username: "root",
-    password: "1234",
-    database: configs.dev_database,
-    dialect: "mysql",
-    logging: false
-})
+  host: configs.db.host,
+  username: configs.db.name,
+  password: configs.db.password,
+  database: configs.db.name,
+  dialect: configs.db.dialect,
+  logging: configs.node_env === "production" ? false : true,
+});
 const connectToDB = () => {
-    sequelize.authenticate()
-        .then(() => {
-            console.log("DB connection succeeded✅")
-        })
-        .catch((err) => {
-            console.error("DB connection error❌", err)
-        })
-}
+  sequelize
+    .authenticate()
+    .then(() => {
+      console.log("DB connection succeeded✅");
+    })
+    .catch((err) => {
+      console.error("DB connection error❌", err);
+    });
+};
 
-module.exports = {connectToDB, sequelize}
+module.exports = { connectToDB, sequelize };
